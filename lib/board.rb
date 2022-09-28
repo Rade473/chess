@@ -63,4 +63,23 @@ class Board
     row, column = location
     grid[row][column].nil?
   end
+
+  def move_piece(start_pos, end_pos)
+    # validate that new location is in available moves
+    piece = self[start_pos]
+    if !piece.available_moves.include?(end_pos)
+      raise InvalidMoveError.new("End position (#{end_pos}) is not in available moves:
+      #{piece.available_moves}")
+    end
+    if !in_bounds?(end_pos)
+      raise InvalidMoveError.new('End position not in bounds')
+    end
+    # remove piece from board at current location
+    self[start_pos] = nil
+
+    # place piece on the board at new position
+    self[end_pos] = piece
+    # update pieces internal location
+    piece.location = end_pos
+  end
 end
