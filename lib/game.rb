@@ -16,7 +16,6 @@ class Game
       puts "It's #{current_player.color}'s turn"
       take_turn
       swap_player!
-
     end
   end
 
