@@ -12,7 +12,7 @@ module Slideable
        if board.empty?(loc)
         moves << loc
        end
-       if !board.empty?(loc) && !enemy?(loc)
+       if friend?(loc)
         break
        end
        if enemy?(loc)

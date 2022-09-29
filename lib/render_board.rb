@@ -13,15 +13,15 @@ class BoardRendererText
       print "#{8 - r}|"
       8.times do |c|
         if (r+c).odd?
-          if board[[r, c]] == nil 
+          if board[[r, c]].is_a?(NullPiece)
           print '   '.bg_gray
           else
           print " #{board[[r, c]].render} ".bg_gray
           end
         else
-          if board[[r, c]] == nil 
+          if board[[r, c]].is_a?(NullPiece)
             print '   '.bg_yellow
-            else
+          else
             print " #{board[[r, c]].render} ".bg_yellow
           end
         end

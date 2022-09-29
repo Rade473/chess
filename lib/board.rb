@@ -3,9 +3,12 @@ require_relative 'pieces'
 # implenets main board features
 class Board
   attr_accessor :grid
+  attr_reader :row_map, :column_map
 
   def initialize
-    @grid = Array.new(8) { Array.new(8) { nil }}
+    @grid = Array.new(8) { Array.new(8, NullPiece.instance)}
+    @row_map = {'1'=> 7, '2'=> 6, '3'=> 5, '4'=> 4, '5'=> 3, '6'=> 2, '7'=> 1, '8'=> 0}
+    @column_map = {'a'=> 0, 'b'=> 1, 'c'=> 2, 'd'=> 3, 'e'=> 4, 'f'=> 5, 'g'=> 6, 'h'=> 7}
   end
 
   def self.start_chess
@@ -61,13 +64,16 @@ class Board
 
   def empty?(location)
     row, column = location
-    grid[row][column].nil?
+    grid[row][column].is_a?(NullPiece)
   end
 
   def in_check?(color)
-    king_pos = pieces
-    .find { |p| p.color == color && p.is_a?(King) }
-    .location
+    king = pieces.find{ |p| p.color == color && p.is_a?(King) }
+
+    if king.nil?
+      raise 'No king found'
+    end
+    king_pos = king.location
     # loop over all the pieces of the opposite color 
     pieces.select {|p| p.color != color }.each do |piece|
     # and if any piece has in available moves with the position of the king
@@ -86,15 +92,15 @@ class Board
   end
 
   def pieces
-    grid.flatten.reject { |piece| piece.nil? }
+    grid.flatten.reject { |piece| piece.is_a?(NullPiece) }
   end
 
   def move_piece(start_pos, end_pos)
     # validate that new location is in available moves
     piece = self[start_pos]
-    if !piece.available_moves.include?(end_pos)
+    if !piece.safe_moves.include?(end_pos)
       raise InvalidMoveError.new("End position (#{end_pos}) is not in available moves:
-      #{piece.available_moves}")
+      #{piece.safe_moves}")
     end
     if !in_bounds?(end_pos)
       raise InvalidMoveError.new('End position not in bounds')
@@ -104,7 +110,7 @@ class Board
 
   def move_piece!(start_pos, end_pos)
      # remove piece from board at current location
-    self[start_pos], self[end_pos] = nil, self[start_pos]
+    self[start_pos], self[end_pos] = NullPiece.instance, self[start_pos]
 
      # place piece on the board at new position
      self[end_pos].location = end_pos

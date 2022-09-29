@@ -6,19 +6,32 @@ require_relative './lib/player'
 require_relative './lib/game'
 require_relative './lib/invalid_move_error'
 
-# b = Board.start_chess
-# g = Game.new(b, Player.new(:white), Player.new(:black), BoardRendererText)
-# puts b.pieces.select{|p| p.color == :black}
-# # g.play
+def start 
+ input = nil
+  loop do
+    input = gets.chomp
+    break if input == '1' || input == 'load' || input == '2'
+    puts 'Invalid input'
+  end
 
-b = Board.new
+  b = Board.start_chess
+  p b.row_map[:'1']
 
-b[[0,0]] = King.new(b, [0, 0], :black)
-b[[3,1]] = Rook.new(b, [3, 1], :white)
-b[[6,6]] = King.new(b, [6, 6], :white)
-b[[3,0]] = Rook.new(b, [3, 0], :white)
+  g = Game.new(
+    b,
+    Player.new(:white),
+    Player.new(:black),
+    BoardRendererText)
+  
+  g.play
 
-render = BoardRendererText.new(b)
-render.render
+end
+start
 
-puts b.in_check?(:black)
+
+
+
+
+#  player.rb - gets input change to chess input for moves
+#  add save option for game instance
+#  add load option

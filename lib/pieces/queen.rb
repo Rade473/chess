@@ -16,5 +16,4 @@ class Queen < Piece
       [-1, -1]
     ]
   end
-
 end
