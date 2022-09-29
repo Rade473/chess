@@ -1,4 +1,5 @@
 require_relative 'board'
+require_relative 'game'
 class Player
   attr_reader :color
 
@@ -7,11 +8,7 @@ class Player
   end
 
   def get_input
-    input = gets.chomp
-    if input == 'save' 
-      save_game
-    end
-    input
+     gets.chomp.downcase
   end
 
   def verify_input
@@ -21,6 +18,10 @@ class Player
       if Array('a'..'h').include?(input.[](0)) && input.[](1).to_i.between?(1, 8)
         coordinates << input.[](0)
         coordinates << input.[](1)
+        break
+      end
+      if input == 'save'
+        coordinates = input
         break
       end
       puts 'Invalid input, please choose a piece with coordinates like:'

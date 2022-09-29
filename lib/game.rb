@@ -1,6 +1,11 @@
+require_relative 'serializer'
+
 class Game
   attr_reader :player1, :player2, :board, :renderer
   attr_accessor :current_player
+
+  include Serializer
+
   def initialize(board, player1, player2, renderer_class)
     @board = board
     @renderer = renderer_class.new(board)
@@ -37,16 +42,24 @@ class Game
     loop do
       puts "Select a piece to move: "
       coordinates = current_player.verify_input
+      if coordinates == 'save'
+        save_game
+        coordinates = current_player.verify_input
+      end
       start_pos = convert_input(coordinates)
       if board[start_pos].color == current_player.color && !board[start_pos].safe_moves.empty?
         break
       end
-      puts "Did not select a #{current_player.color}'s piece or that piece can't move"
+      puts "Did not select a #{current_player.color}'s piece or that piece can't safely move"
     end
   # prompt current player to enter an ending position
     loop do
       puts "Select a position to move to:"
       coordinates = current_player.verify_input
+      if coordinates == 'save'
+        save_game
+        coordinates = current_player.verify_input
+      end
       end_pos = convert_input(coordinates)
       begin
         board.move_piece(start_pos, end_pos)
